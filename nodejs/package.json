@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/vincentlin1/wild-messaging/issues"
   },
-  "homepage": "https://github.com/vincentlin1/wild-messaging#readme"
+  "homepage": "https://github.com/vincentlin1/wild-messaging#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
