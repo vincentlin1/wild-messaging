@@ -1,10 +1,41 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Double Container Test</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wild West Forum</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Welcome to My Application</h1>
-    <p>This is served by nginx as a static file.</p>
-    <p>API requests to <code>/api/</code> will be proxied to the Node.js backend.</p>
+
+<nav class="nav">
+  <div class="nav-left">
+    <a href="index.html">Wild West Forum</a>
+    <a href="comments.html">Feed</a>
+    <a href="new_comment.html">New Comment</a>
+  </div>
+
+  <div class="nav-right">
+    <a href="register.html">Register</a>
+    <a href="login.html">Login</a>
+  </div>
+</nav>
+
+<main class="container">
+  <h1>Welcome to the Wild West Forum</h1>
+  <p>This project intentionally simulates vulnerabilities for learning. Use the navigation bar above to register, log in, and explore the forum.</p>
+
+  <section class="quick-links">
+    <a class="btn" href="register.html">Create Account</a>
+    <a class="btn" href="login.html">Login</a>
+    <a class="btn" href="comments.html">View Feed</a>
+  </section>
+</main>
+
+<footer class="footer">
+  <small>Wild West Forum — insecure on purpose (for learning!)</small>
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>

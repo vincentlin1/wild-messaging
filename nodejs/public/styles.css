@@ -1,0 +1,125 @@
+/* ✅ Sticky Footer */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The main content grows to fill the space and pushes footer down */
+main.container {
+  flex: 1;
+}
+
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --accent:#d6b85a;
+  --muted:#9aa4b2;
+  --text:#e6eef6;
+}
+
+*{box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:linear-gradient(180deg,#071025 0%, #0b1220 100%);
+  color:var(--text);
+}
+
+.container{
+  max-width:900px;
+  margin:28px auto;
+  padding:16px;
+}
+
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 24px;
+  background:rgba(255,255,255,0.03);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.nav a{
+  color:var(--text);
+  text-decoration:none;
+  margin-right:14px;
+}
+
+.nav-right a:last-child{
+  margin-right:0;
+}
+
+.footer{
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+  opacity:0.8;
+  margin-top:30px;
+}
+
+.form{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-width:550px;
+}
+
+.form label{
+  display:flex;
+  flex-direction:column;
+}
+
+.form input,
+.form textarea{
+  padding:10px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,0.05);
+  background:rgba(255,255,255,0.04);
+  color:var(--text);
+}
+
+.btn{
+  background:var(--accent);
+  color:#071025;
+  padding:10px 14px;
+  border:0;
+  border-radius:8px;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.comments-list{
+  list-style:none;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.comment{
+  background:rgba(255,255,255,0.03);
+  padding:12px;
+  border-radius:8px;
+}
+
+.comment-meta{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.comment-body{
+  white-space:pre-wrap;
+}
+
+.quick-links{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
