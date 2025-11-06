@@ -43,17 +43,62 @@ body{
   padding:12px 24px;
   background:rgba(255,255,255,0.03);
   border-bottom:1px solid rgba(255,255,255,0.05);
+  
 }
 
 .nav a{
   color:var(--text);
   text-decoration:none;
   margin-right:14px;
+ /* Smooth animation */
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+
+}
+
+.nav a:hover{
+  background:rgba(255,255,255,0.08);
+  color:var(--accent);
+  box-shadow:0 0 8px rgba(214,184,90,0.45);
+}
+
+/* Click effect */
+.nav a:active{
+  transform:scale(0.96);
 }
 
 .nav-right a:last-child{
   margin-right:0;
 }
+.nav-right a {
+  background: var(--accent);
+  color: #071025 !important;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 2px solid var(--accent);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Hover effect for button */
+.nav-right a:hover {
+  background: transparent;
+  color: var(--accent) !important;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(214,184,90,0.5);
+}
+
+/*  Click effect */
+.nav-right a:active {
+  transform: scale(0.95);
+}
+
 
 .footer{
   text-align:center;

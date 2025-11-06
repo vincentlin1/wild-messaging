@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/vincentlin1/wild-messaging#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "hbs": "^4.2.0"
   }
 }

@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    {{> nav}}
+
+    <main class="container">
+        <h1>Register</h1>
+
+        {{#if error}}
+            <p style="color: #ff6b6b; font-weight: bold;">{{error}}</p>
+        {{/if}}
+
+        {{#if success}}
+            <p style="color: #90ee90; font-weight: bold;">{{success}}</p>
+        {{/if}}
+
+        <form class="form" action="/register" method="POST">
+            <label>Username
+            <input name="username" required>
+            </label>
+
+            <label>Password
+            <input type="password" name="password" required>
+            </label>
+
+            <button class="btn" type="submit">Register</button>
+        </form>
+
+    </main>
+
+    {{> footer}}
+</body>
+</html>
+

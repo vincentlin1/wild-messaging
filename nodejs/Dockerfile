@@ -1,5 +1,5 @@
 #Text Book
-FROM node:lts
+FROM node:lts-alpine
 
 # Set working directory
 WORKDIR /app
