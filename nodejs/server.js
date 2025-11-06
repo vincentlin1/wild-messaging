@@ -14,30 +14,10 @@ app.use(cookieParser()); // Add this line
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
-
+//users 
 const users = [];
 
-//app.use(express.static('public'));
-
-// API Routes
-// Note: We don't include '/api' in our routes because nginx strips it when forwarding
-// nginx receives: http://localhost/api/users
-// nginx forwards to: http://backend-nodejs:3000/users (without /api)
-/*
-app.get('/', (req, res) => {
-    res.json({ 
-        message: 'Hello from the API!',
-        timestamp: new Date().toISOString()
-    });
-});
-
-app.get('/health', (req, res) => {
-    res.json({ 
-        status: 'healthy',
-        service: 'nodejs-backend'
-    });
-});
-*/
+//all this for testing got it from Class nots 
 app.get('/', (req, res) => {
     let user = {
         name: "Guest",
@@ -74,33 +54,39 @@ app.post('/setname', (req, res) => {
     
     res.redirect('/');
 });
+
+//Real code starts 
 // render register page
 app.get("/register", (req, res) => {
   res.render("register");
 });
 
-//  Handle register form submission
+//  register form 
 app.post("/register", (req, res) => {
+  //find the username and password requests
   const { username, password } = req.body;
 
-  // Check if username already exists u => function as return true or flase
+  // checks if username already exists, u is a arrow => function as return true or flase
   const exists = users.find( u => u.username === username);
 
-
+  //if it exist then it mean already taken return error msg where the hbs will handle the see 
   if (exists) {
     return res.render("register", {
-      error: "Username already taken. Try another."
+      error: "username already taken. Try another."
     });
   }
 
+  //add the object of username and password to the users
   //found how to append object into array https://www.geeksforgeeks.org/javascript/how-to-add-an-object-to-an-array-in-javascript/
   users.push({ username, password });
 
+  //ask the user to got to log in page to log in 
   return res.render("register", {
-    success: "success ! you can now log in."
+    success: "Yay! Go to login page, you can now log in."
   });
 });
 
+//also from notes to check and understand the logic 
 //If click on logout it clears cookies 
 app.get("/logout", (req, res) => {
     // Clear the cookie
