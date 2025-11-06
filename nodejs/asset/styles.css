@@ -20,6 +20,8 @@ main.container {
   --accent:#d6b85a;
   --muted:#9aa4b2;
   --text:#e6eef6;
+  --error:#ff6b6b;
+  --success:#90ee90;
 }
 
 *{box-sizing:border-box}
@@ -113,6 +115,15 @@ body{
   flex-direction:column;
   gap:10px;
   max-width:550px;
+}
+.error{
+  color: var(--error); 
+  font-weight: bold;
+
+}
+.success{
+  color: var(--success); 
+  font-weight: bold;
 }
 
 .form label{

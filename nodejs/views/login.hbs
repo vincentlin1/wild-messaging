@@ -4,36 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wild meassage register</title>
+    <title>Wild meassage login</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     {{> nav}}
 
     <main class="container">
-        <h1>Register</h1>
-<!--if error or success show the meassage-->
+        <h1>Login</h1>
+    <!--if error show the meassage-->
         {{#if error}}
             <p class="error">{{error}}</p>
         {{/if}}
 
-        {{#if success}}
-            <p class="success">{{success}}</p>
-        {{/if}}
-    <!--POST method to login register the username and password is required field-->
-        <form class="form" action="/register" method="POST">
-            <label>Username
+<!--POST method to login where the username and password is required field-->
+        <form class="form" action="/login" method="POST" >
+        <label>Username
             <input name="username" required>
-            </label>
+        </label>
 
-            <label>Password
+        <label>Password
             <input type="password" name="password" required>
-            </label>
+        </label>
 
-            <button class="btn" type="submit">Register</button>
+        <button class="btn" type="submit">Login</button>
         </form>
-
     </main>
+        </main>
 
     {{> footer}}
 </body>

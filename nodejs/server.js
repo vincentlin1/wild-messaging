@@ -19,14 +19,11 @@ const users = [];
 
 //all this for testing got it from Class nots 
 app.get('/', (req, res) => {
-    let user = {
-        name: "Guest",
-        msg: "Welcome! Please set your name."
-    };
+  let user = null
     
     // Check if cookie exists and parse it
-    if (req.cookies && req.cookies.name) {
-        user = JSON.parse(req.cookies.name);
+    if (req.cookies && req.cookies.Session) {
+        user = JSON.parse(req.cookies.Session);
     }
     
     res.render('home', { user: user });
@@ -37,21 +34,34 @@ app.get('/change', (req, res) => {
     res.render('changePage');
 });
 
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
 // Handle form submission - now sets a cookie
-app.post('/setname', (req, res) => {
-    const name = (req.body && req.body.name) ? req.body.name : '';
-    
-    // Set cookie with user data
-    res.cookie('name', JSON.stringify({
-        name: name, 
-        msg: "Hello there!"
+app.post('/login', (req, res) => {
+  //get the username and password requests from the form body
+    const { username, password } = req.body;
+    //see if there exists a user in the users array with matching username and password
+    const user = users.find(u => u.username === username && u.password === password);
+    // if user doesn't exist then return invails username or password
+    if (!user) {
+      return res.render("login", {
+        error: "incorrect username or password."
+      });
+    }
+
+    // Set cookie with username 
+    res.cookie('Session', JSON.stringify({
+        username: username, 
     }), { 
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         secure: false,
         sameSite: "lax"
     });
-    
+    // if all good the return home 
     res.redirect('/');
 });
 
@@ -63,7 +73,7 @@ app.get("/register", (req, res) => {
 
 //  register form 
 app.post("/register", (req, res) => {
-  //find the username and password requests
+  //get the username and password requests from the form body
   const { username, password } = req.body;
 
   // checks if username already exists, u is a arrow => function as return true or flase
@@ -80,7 +90,7 @@ app.post("/register", (req, res) => {
   //found how to append object into array https://www.geeksforgeeks.org/javascript/how-to-add-an-object-to-an-array-in-javascript/
   users.push({ username, password });
 
-  //ask the user to got to log in page to log in 
+  //ask the user to got to log in page to log in | Icould just do res.render(login,{success:"you can now log in"})
   return res.render("register", {
     success: "Yay! Go to login page, you can now log in."
   });
@@ -90,7 +100,7 @@ app.post("/register", (req, res) => {
 //If click on logout it clears cookies 
 app.get("/logout", (req, res) => {
     // Clear the cookie
-    res.clearCookie("name");
+    res.clearCookie("Session");
 
     //  back to home page
     res.redirect("/");
