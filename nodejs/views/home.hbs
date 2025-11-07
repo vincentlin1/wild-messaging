@@ -1,41 +1,38 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie Demo</title>
+    <title>Wild meassage - home</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    {{> nav}}
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wild West Forum</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+    <body>
+        {{> nav}}
+            
+            <main class="container">
+                <!--if there is a user send out this msg else make them log in or register-->
+                {{#if user}}
+                    <h1>Welcome, {{user.username}}!</h1>
+                    <p>You can now <a href="/new_comment">add a comment</a> or view the <a href="/comments">feed</a>.</p>
+                {{else}}
+                    <h1>Welcome, Guest!</h1>
+                    <p>Please <a href="/login">log in</a> or <a href="/register">sign up</a> to post comments.</p>
+                {{/if}}
+            </main>
 
-    <main class="container">
-    <h1>Cookie Demo Application</h1>
-    
-    <h2>Current User Information</h2>
-    <p><strong>Name:</strong> {{user.name}}</p>
-    <p><strong>Message:</strong> {{user.msg}}</p>
-    
-    <div>
-        <a href="/change">Change Name</a>
-        <form method="POST" action="/resetcookie" style="display: inline;">
-            <button type="submit">Reset Cookie</button>
-        </form>
-    </div>
-    
-    <div>
-        <h3>Success! Cookies are working:</h3>
-        <ul>
-            <li>When you first visit, you're shown as "Guest"</li>
-            <li>Click "Change Name" to set a cookie with your name</li>
-            <li>After setting the cookie, refresh the page - your name persists!</li>
-            <li>Click "Reset Cookie" to clear the stored data</li>
-        </ul>
-    </div>
-    </main>
+        {{> footer}}
+    </body>
+</html>
 
-    {{> footer}}
 </body>
 </html>
 

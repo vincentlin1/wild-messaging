@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wild meassaging - new comment </title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  {{> nav}}
+
+  <main class="container">
+    <h1>New Comment</h1>
+    <!-- eror if not logged in -->
+    {{#if error}}
+    <p class="error">{{error}}</p>
+    {{/if}}
+<!-- new form to post-->
+    <form class="form" method="POST" action="/comment">
+      <label>Comment
+        <textarea name="text" required></textarea>
+      </label>
+
+      <button class="btn" type="submit">Post Comment</button>
+    </form>
+  </main>
+
+  {{> footer}}
+</body>
+</html>

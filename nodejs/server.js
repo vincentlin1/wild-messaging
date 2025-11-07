@@ -6,35 +6,31 @@ const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 3034;
 
 // Middleware all got from Tombstone
-app.use(express.static(path.join(__dirname, 'asset')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-//app.use(express.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser()); // Add this line
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
-//users 
+//users array
 const users = [];
-
-//all this for testing got it from Class nots 
+//comments array
+const comments = [];
+ 
 app.get('/', (req, res) => {
+  //no users yest then user is null
   let user = null
     
     // Check if cookie exists and parse it
     if (req.cookies && req.cookies.Session) {
         user = JSON.parse(req.cookies.Session);
     }
-    
+    //renders the home page with passing user data
     res.render('home', { user: user });
 });
 
-// Page to change name
-app.get('/change', (req, res) => {
-    res.render('changePage');
-});
-
-
+//renders login 
 app.get("/login", (req, res) => {
   res.render("login");
 });
@@ -65,8 +61,8 @@ app.post('/login', (req, res) => {
     res.redirect('/');
 });
 
-//Real code starts 
-// render register page
+
+//render register page
 app.get("/register", (req, res) => {
   res.render("register");
 });
@@ -76,7 +72,7 @@ app.post("/register", (req, res) => {
   //get the username and password requests from the form body
   const { username, password } = req.body;
 
-  // checks if username already exists, u is a arrow => function as return true or flase
+  // checks if username already exists
   const exists = users.find( u => u.username === username);
 
   //if it exist then it mean already taken return error msg where the hbs will handle the see 
@@ -90,9 +86,9 @@ app.post("/register", (req, res) => {
   //found how to append object into array https://www.geeksforgeeks.org/javascript/how-to-add-an-object-to-an-array-in-javascript/
   users.push({ username, password });
 
-  //ask the user to got to log in page to log in | Icould just do res.render(login,{success:"you can now log in"})
-  return res.render("register", {
-    success: "Yay! Go to login page, you can now log in."
+  //ask the user to got to log in page to log in | I could just do res.render(login,{success:"you can now log in"})
+  return res.render("login", {
+    success: "Yay! you can now log in."
   });
 });
 
@@ -101,9 +97,62 @@ app.post("/register", (req, res) => {
 app.get("/logout", (req, res) => {
     // Clear the cookie
     res.clearCookie("Session");
-
     //  back to home page
     res.redirect("/");
+});
+
+
+// Render new comment page, only if logged in
+app.get("/new_comment", (req, res) => {
+    let user = null;
+
+    if (req.cookies && req.cookies.Session) {
+        user = JSON.parse(req.cookies.Session);
+    }
+
+    if (!user) {
+        // Not logged in, show login page with error
+        return res.render("login", { error: "You must be logged in to post a comment." });
+    }
+
+    // Render new comment page with user info
+    res.render("new_comment", { user });
+});
+
+// Handle posting a new comment
+app.post("/comment", (req, res) => {
+    let user = null;
+    // see if there is cookies are set
+    if (req.cookies && req.cookies.Session) {
+        user = JSON.parse(req.cookies.Session);
+    }
+    // if user doesn't exist aka not logged in not the go to login and the error msg
+    if (!user) {
+        return res.render("login", { error: "You must be logged in to post a comment." });
+    }
+    //get the text
+    const { text } = req.body;
+    //if theres no text then send error msg
+    if ( text.trim() == "") {
+        return res.render("new_comment", { user, error: "Comment cannot be empty." });
+    }
+    //the comment then is append to comments arr with author as the username and the text as the text and time as when they hit the btn
+    comments.push({
+        author: user.username,
+        text: text,
+        timestamp: new Date()
+    });
+
+    //to the comments page after posting
+    res.redirect("/comments");
+});
+// display all comments
+app.get("/comments", (req, res) => {
+    let user = null;
+    if (req.cookies && req.cookies.Session) {
+        user = JSON.parse(req.cookies.Session);
+    }
+    res.render("comments", { user, comments });
 });
 
 // Start server
