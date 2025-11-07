@@ -1,0 +1,29 @@
+# Wild West Forum (midterm Project)
+
+This is a simple Node.js + Express + Handlebars app using Docker and Nginx. 
+
+
+features:
+user registration and login
+post and view comments
+cookies and sessions handled via Express
+styled with CSS 
+
+# prerequisites
+
+- Docker(https://www.docker.com/get-started) installed
+- Docker Compose(https://docs.docker.com/compose/install/) installed
+
+# setup & Run
+
+1. Clone the repository:
+ssh git clone in your own server
+2. go into the clone:
+cd \wild-messaging
+3. bring up the sever make sure 3034 is allowed:
+docker compose build 
+docker compose up -d 
+4. stop the dockers or bring it down:
+docker compose down when done
+5. to remove all dockers 
+docker container prune to remove all dockers 
