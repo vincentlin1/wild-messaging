@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3034
     # No ports exposed - only nginx can access this container
     networks:
       - app-network
