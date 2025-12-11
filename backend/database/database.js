@@ -6,9 +6,10 @@ const path = require('path');
 
 // Connect to database file
 const dbPath = path.join(__dirname, 'myapp.db');
+console.log(" SQLite DB path:", dbPath);
 const db = new Database(dbPath);
 
-
+try{
   // creates users table if it doesn't exist
   // id autoincrments for each user(prime key)
   // username needs to be unique
@@ -22,7 +23,7 @@ const db = new Database(dbPath);
     `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
+        password_hash TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         display_name TEXT NOT NULL,
         failed_logins INTEGER DEFAULT 0,
@@ -71,16 +72,20 @@ const db = new Database(dbPath);
   // the id autoincerment for each attempt
   // username username used
   // ip address the ip address of said user
-  // success 1 for success 0  for fail
+  // success keep track if it was successful 1 is good and the default is 0 for fail
   // timestamp the current time 
   db.exec(
     `CREATE TABLE IF NOT EXISTS login_attempts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,
         ip_address TEXT NOT NULL,
-        success INTEGER NOT NULL,
+        success INTEGER DEFAULT 0,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     );`
     );
+    console.log("success")
+  }catch(err){
+    console.log(err.meassage)
+  };
 
 module.exports = db;
