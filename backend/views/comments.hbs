@@ -18,21 +18,26 @@
       {{#each comments}}
         <li class="comment">
           <div class="comment-meta">
-            <strong>{{this.author}}</strong> — {{this.timestamp}}
+            <strong>{{display_name}}</strong> — {{created_at}}
           </div>
-          <div class="comment-body">{{this.text}}</div>
+          <div class="comment-body">{{content}}</div>
         </li>
       {{/each}}
     </ul>
-  <!--no comment -->
+    <!--no comment -->
   {{else}}
-    <p>No comments yet. go to new comment to be the first to post</p>
+    <p>No comments yet. Be the first to post.</p>
   {{/if}}
-   <!--if logged in you can see a button that take you to new comment else it'll tell you to log in first-->
-  {{#if user}}
-    <a class="btn" href="/new_comment">Add new comment</a>
+  <!--if logged in then allow to comment-->
+  {{#if isLoggedIn}}
+    <form class="from" method="POST" action="/comments/comment">
+      <textarea name="text" required></textarea>
+      <br>
+      <button class="btn" type="submit">Add new comment</button>
+    </form>
+  <!--else redirceted to log in-->
   {{else}}
-    <p>you must <a href="/login">log in</a> to post a comment.</p>
+    <p>You must <a href="/api/auth/login">log in</a> to post a comment.</p>
   {{/if}}
 </main>
 

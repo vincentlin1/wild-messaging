@@ -7,6 +7,7 @@ const session = require('express-session');
 const SQLiteStore = require('./modules/sqlite-session-store');
 const db = require('./database/database');
 const authRoutes = require('./routes/auth');
+const commentRoutes = require('./routes/comments');
 
 
 const app = express();
@@ -41,7 +42,7 @@ app.use(session({
 }));
 //  Auth routes
 app.use('/api/auth', authRoutes);
-
+app.use('/comments', commentRoutes);
 
 //  Routes for normal
 app.use('/', authRoutes);

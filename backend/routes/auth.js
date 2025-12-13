@@ -28,8 +28,8 @@ router.post('/register', async (req, res) => {
     const { email,username,display_name, password } = req.body;
    
     // Validate input
-    if (!username || !password) {
-      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Username and password are required'));
+    if (!username || !password || !email || !display_name) {
+      return res.redirect('/api/auth/register?error=' + encodeURIComponent('All fields are required'));
     }
    
     // Validate password requirements
@@ -81,7 +81,7 @@ router.post('/register', async (req, res) => {
    
     // Redirect to success page with username
     console.log('user sucess')
-    res.render(`/login.hbs`,{success:'yay it works'});
+    res.redirect('/api/auth/login?success=' + encodeURIComponent('Registration successful. Please log in.'));
    
   } catch (error) {
     console.error('Registration error:', error);
@@ -94,7 +94,9 @@ router.post('/register', async (req, res) => {
  * GET /login - Show login form
  */
 router.get('/login', (req, res) => {
-  res.render('login.hbs');
+  const error = req.query.error;  // get error from query string
+  const success = req.query.success; // success message
+  res.render('login.hbs',{error,success});
 });
 
 
