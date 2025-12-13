@@ -5,7 +5,7 @@ const router = express.Router();
 const path = require('path');
 const db = require('../database/database');
 const { validatePassword, hashPassword, comparePassword } = require('../modules/password_auth');
-
+const {validateEmail} = require('../modules/email_auth.js');
 
 /**
  * GET /register - Show registration form
@@ -22,7 +22,7 @@ router.get('/register', (req, res) => {
 
 
 // POST /register - Register a new user
- 
+
 router.post('/register', async (req, res) => {
   try {
     const { email,username,display_name, password } = req.body;
@@ -33,10 +33,10 @@ router.post('/register', async (req, res) => {
     }
    
     // Validate password requirements
-    const validation = validatePassword(password);
-    if (!validation.valid) {
-      const errorsText = validation.errors.join(', ');
-      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Password does not meet requirements: ' + errorsText));
+    const validPass = validatePassword(password);
+    if (!validPass.valid) {
+      const passErrorsText = validPass.errors.join(', ');
+      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Password does not meet requirements: ' + passErrorsText));
     }
    
     // Check if username already exists
@@ -45,14 +45,31 @@ router.post('/register', async (req, res) => {
         console.log('user already exist')
       return res.redirect('/api/auth/register?error=' + encodeURIComponent('Username already exists. Please choose a different username.'));
     }
+    // If the username and display_name is the same error
+    if (username===display_name){
+      console.log('user and displayname is the same')
+      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Username and display name can not be the same. Please choose a different username or displayname.'));
+    };
+    // if email exist already tell them to enter another or use forgot password
+    const existingEmail = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+    if (existingEmail) {
+        console.log('email already exist')
+      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Email already exists. Please choose a different Email or click forgot password.'));
+    }
+    //very simple vaild email comformation
+    const vaildEmail = validateEmail(email);
+      if (!vaildEmail.valid) {
+      const emailErrorsText = vaildEmail.errors.join(', ');
+      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Email Does not meet minimum requirement: ' + emailErrorsText));
+    }
    
     // Hash the password before storing
     const passwordHash = await hashPassword(password);
    
     // Insert new user into database
     const stmt = db.prepare(`
-  INSERT INTO users (username, password_hash, email, display_name)
-  VALUES (?, ?, ?, ?)`);
+    INSERT INTO users (username, password_hash, email, display_name)
+    VALUES (?, ?, ?, ?)`);
 
 
     stmt.run(
@@ -64,7 +81,7 @@ router.post('/register', async (req, res) => {
    
     // Redirect to success page with username
     console.log('user sucess')
-    res.redirect(`/login`);
+    res.render(`/login.hbs`,{success:'yay it works'});
    
   } catch (error) {
     console.error('Registration error:', error);
@@ -113,8 +130,8 @@ router.post('/login', async (req, res) => {
     }
    
     // Successful login - update last login time
-    db.prepare('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?')
-      .run(user.id);
+    //db.prepare('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?')
+    //  .run(user.id);
    
     // Create session
     req.session.userId = user.id;

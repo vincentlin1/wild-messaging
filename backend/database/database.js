@@ -39,16 +39,16 @@ try{
   // session token 
   // created and expired at date
   // forgin key is user id and it references the id in users table
-  db.exec(
-    `CREATE TABLE IF NOT EXISTS sessions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        session_token TEXT UNIQUE NOT NULL,
-        created_at INTEGER NOT NULL,
-        expires_at INTEGER NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    );`
-    );
+  // db.exec(
+  //   `CREATE TABLE IF NOT EXISTS sessions (
+  //       id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //       user_id INTEGER NOT NULL,
+  //       session_token TEXT UNIQUE NOT NULL,
+  //       created_at INTEGER NOT NULL,
+  //       expires_at INTEGER NOT NULL,
+  //       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  //   );`
+  //   );
 
   // comments table creates one if it doesn't exsit
   // comment id autoimerments for each comment(prime key)

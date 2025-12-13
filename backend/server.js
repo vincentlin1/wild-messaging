@@ -4,7 +4,7 @@ const hbs = require('hbs');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-
+const SQLiteStore = require('./modules/sqlite-session-store');
 const db = require('./database/database');
 const authRoutes = require('./routes/auth');
 
@@ -23,24 +23,35 @@ app.set('views', path.join(__dirname, 'views'));
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 
 
+
+//session
+const sessionStore = new SQLiteStore({
+  db: path.join(__dirname, './database/myapp.db'),
+  table: 'sessions'
+});
+app.use(session({
+  store: sessionStore,
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+  secure: false, // Set to true if using HTTPS
+    maxAge: 24 * 60 * 60 * 1000  // 1 day
+  }
+}));
 //  Auth routes
 app.use('/api/auth', authRoutes);
 
 
-//  Routes
-
+//  Routes for normal
 app.use('/', authRoutes);
 
 // Home for now 
 app.get('/', (req, res) => {
 
-
-
   res.render('home');
   
 });
-
-
 
 //  Start server
 app.listen(PORT, '0.0.0.0', () => {
