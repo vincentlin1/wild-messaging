@@ -1,19 +1,20 @@
 {
-  "name": "wild-messaging",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "finals",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vincentlin1/wild-messaging.git"
   },
   "keywords": [
-    "midterm"
+    "finals"
   ],
-  "author": "",
+  "author": "vincent lin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vincentlin1/wild-messaging/issues"
@@ -23,11 +24,9 @@
     "argon2": "^0.44.0",
     "better-sqlite3": "^12.5.0",
     "cookie-parser": "^1.4.7",
-    "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-session": "^1.18.2",
     "hbs": "^4.2.0",
-    "nodemailer": "^7.0.11",
     "socket.io": "^4.8.1"
   }
 }

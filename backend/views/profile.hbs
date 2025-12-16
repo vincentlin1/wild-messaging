@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wild meassaging - new comment </title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  {{> nav}}
+
+  <main class="container">
+  <h1>Account Settings</h1>
+
+{{#if error}}<p class="error">{{error}}</p>{{/if}}
+{{#if success}}<p class="success">{{success}}</p>{{/if}}
+
+<h2>Change Password</h2>
+<form method="POST" action="/profile/password">
+  <input type="password" name="current_password" placeholder="Current password" required>
+  <input type="password" name="new_password" placeholder="New password" required>
+  <button type="submit">Change Password</button>
+</form>
+
+<hr>
+
+<h2>Change Email</h2>
+<form method="POST" action="/profile/email">
+  <input type="email" name="email" value="{{user.email}}" required>
+  <input type="password" name="password" placeholder="Confirm password" required>
+  <button type="submit">Update Email</button>
+</form>
+
+<hr>
+
+<h2>Change Display Name</h2>
+<form method="POST" action="/profile/display-name">
+  <input type="text" name="display_name" value="{{user.display_name}}" required>
+  <input type="password" name="password" placeholder="Confirm password" required>
+  <button type="submit">Update Display Name</button>
+</form>
+<hr>
+
+<h2>Change Profile Color</h2>
+<form method="POST" action="/profile/color">
+  <label>Profile name color:</label>
+  <select name="color">
+    <option value="blue">Blue</option>
+    <option value="red">Red</option>
+    <option value="green">Green</option>
+    <option value="purple">Purple</option>
+    <option value="orange">Orange</option>
+  </select>
+  <button>Save</button>
+</form>
+
+
+  {{> footer}}
+</body>
+</html>

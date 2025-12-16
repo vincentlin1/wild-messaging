@@ -2,12 +2,16 @@
   <div class="nav-left">
     <a href="/">Wild West Forum</a>
     <a href="/comments">Feed</a>
-    <a href="/new_comment">New Comment</a>
+
+    {{#if user}}
+      <a href="/new_comment">New Comment</a>
+    {{/if}}
   </div>
 
   <div class="nav-right">
     {{#if user}}
-      <span>Welcome, {{user.username}}</span>
+      <span>Welcome, <span class="{{user.profile_color}}">{{user.display_name}}</span></span>
+      <a href="/profile">Profile</a>
       <a href="/logout">Logout</a>
     {{else}}
       <a href="/login">Login</a>

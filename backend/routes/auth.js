@@ -138,6 +138,7 @@ router.post('/login', async (req, res) => {
     // Create session
     req.session.userId = user.id;
     req.session.username = user.username;
+    req.session.display_name = user.display_name;
     req.session.isLoggedIn = true;
    
     // Redirect to success page
@@ -159,7 +160,7 @@ router.get('/logout', (req, res) => {
       console.error('Logout error:', err);
       return res.redirect('views/comments');
     }
-    res.redirect('/views/comments');
+    res.redirect('/');
   });
 });
 

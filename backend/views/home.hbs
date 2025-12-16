@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wild meassage - home</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wild West Forum - Home</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wild West Forum</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-    <body>
-        {{> nav}}
-            
-            <main class="container">
-                <!--if there is a user send out this msg else make them log in or register-->
-                {{#if user}}
-                    <h1>Welcome, {{user.username}}!</h1>
-                    <p>You can now <a href="/new_comment">add a comment</a> or view the <a href="/comments">feed</a>.</p>
-                {{else}}
-                    <h1>Welcome, Guest!</h1>
-                    <p>Please <a href="/login">log in</a> or <a href="/register">sign up</a> to post comments.</p>
-                {{/if}}
-            </main>
 
-        {{> footer}}
-    </body>
-</html>
+  {{> nav}}
+
+  <main class="container">
+    {{#if user}}
+      <h1>Welcome, <span class="{{user.profile_color}}">{{user.display_name}}</span>!</h1>
+      <p>
+        You can now
+        <a href="/new_comment">add a comment</a>
+        or view the
+        <a href="/comments">feed</a>.
+      </p>
+    {{else}}
+      <h1>Welcome, Guest!</h1>
+      <p>
+        Please <a href="/login">log in</a> or
+        <a href="/register">sign up</a>
+        to post comments.
+      </p>
+    {{/if}}
+  </main>
+
+  {{> footer}}
 
 </body>
 </html>
-

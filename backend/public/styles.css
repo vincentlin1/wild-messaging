@@ -24,6 +24,12 @@ main.container {
   --error:#ff6b6b;
   --success:#90ee90;
 }
+/* predefined colors for profile color */
+.blue   { color: #2563eb; }
+.red    { color: #dc2626; }
+.green  { color: #16a34a; }
+.purple { color: #7c3aed; }
+.orange { color: #ea580c; }
 
 *{box-sizing:border-box}
 

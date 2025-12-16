@@ -8,7 +8,7 @@ const SQLiteStore = require('./modules/sqlite-session-store');
 const db = require('./database/database');
 const authRoutes = require('./routes/auth');
 const commentRoutes = require('./routes/comments');
-
+const accountRoutes = require('./routes/account');
 
 const app = express();
 const PORT = process.env.PORT || 3034;
@@ -40,19 +40,35 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000  // 1 day
   }
 }));
+app.use((req, res, next) => {
+  if (req.session?.userId) {
+    const user = db.prepare(`
+      SELECT id, username, display_name, profile_color
+      FROM users
+      WHERE id = ?
+    `).get(req.session.userId);
+
+    res.locals.user = user || null;
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
+// Home for now 
+app.get('/', (req, res) => {
+  res.render('home');
+});
 //  Auth routes
 app.use('/api/auth', authRoutes);
 app.use('/comments', commentRoutes);
+app.use('/', accountRoutes);
+
 
 //  Routes for normal
 app.use('/', authRoutes);
+app.use('/', commentRoutes);
 
-// Home for now 
-app.get('/', (req, res) => {
 
-  res.render('home');
-  
-});
 
 //  Start server
 app.listen(PORT, '0.0.0.0', () => {
