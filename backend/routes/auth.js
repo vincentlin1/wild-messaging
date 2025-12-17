@@ -26,6 +26,7 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res) => {
   try {
     const { email,username,display_name, password } = req.body;
+    
    
     // Validate input
     if (!username || !password || !email || !display_name) {
@@ -106,6 +107,8 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const {  username, password } = req.body;
+    const ip = req.ip; //get the ip
+    const now = Date.now();
    
     // Validate input
     if (!username || !password) {
@@ -113,28 +116,50 @@ router.post('/login', async (req, res) => {
       return res.redirect('/api/auth/login?error=' + encodeURIComponent('Username and password are required'));
     }
    
-    // Find user by username
+    // find user by username
     const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
    
     if (!user) {
-        console.log('password not match')
+      console.log('username or pass not match')
+      db.prepare('INSERT INTO login_attempts (username, ip_address) VALUES (?, ?)').run(username, ip);
       // Don't reveal if username exists (security best practice)
       return res.redirect('/api/auth/login?error=' + encodeURIComponent('Invalid username or password'));
      
     }
-   
+    // check if account is locked
+    if (user.lock_until && now < user.lock_until) {
+      const minutes = Math.ceil((user.lock_until - now) / 60000);
+      return res.redirect('/api/auth/login?error=' + encodeURIComponent(`Account locked. Try again in ${minutes} minute(s).`));
+    }
+
     // Compare entered password with stored hash
     const passwordMatch = await comparePassword(password, user.password_hash);
    
     if (!passwordMatch) {
-        console.log('password not match')
+      console.log('username or pass not match')
+      let failed = user.failed_logins + 1;
+      let lockUntil = 0;
+
+      // lock the account if failed attempts exceed 5
+      if (failed >= 5) {
+        lockUntil = now + 15 * 60 * 1000; // 15 minutes
+        failed = 0; // reset failed attempts after locking
+      }
+
+      // update failed login count and lock_until
+      db.prepare('UPDATE users SET failed_logins = ?, lock_until = ? WHERE id = ?')
+        .run(failed, lockUntil, user.id);
+
+      //update failed attempt
+      db.prepare('INSERT INTO login_attempts (username, ip_address) VALUES (?, ?)').run(username, ip);
+
       return res.redirect('/api/auth/login?error=' + encodeURIComponent('Invalid username or password'));
     }
    
-    // Successful login - update last login time
-    //db.prepare('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?')
-    //  .run(user.id);
-   
+    // successful login → reset failed attempts and lock_until
+    db.prepare('UPDATE users SET failed_logins = 0, lock_until = 0 WHERE id = ?').run(user.id);
+    // log successful login
+    db.prepare('INSERT INTO login_attempts (username, ip_address, success) VALUES (?, ?, 1)').run(username, ip);
     // Create session
     req.session.userId = user.id;
     req.session.username = user.username;
@@ -146,7 +171,7 @@ router.post('/login', async (req, res) => {
    
   } catch (error) {
     console.error('Login error:', error);
-    res.redirect('/views/comments');
+    res.redirect('/api/auth/login?error=' + encodeURIComponent('Internal server error'));
   }
 });
 

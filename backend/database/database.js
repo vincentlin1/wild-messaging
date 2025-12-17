@@ -67,6 +67,24 @@ try{
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );`
     );
+  // chat messages table
+  // id is message id
+  // user_id which user sent it
+  // display_name name shown in chat
+  // profile_color user customization
+  // message chat content
+  // created_at when message was sent
+  db.exec(
+    `CREATE TABLE IF NOT EXISTS chat_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        display_name TEXT NOT NULL,
+        profile_color TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );`
+  );
 
   // login attempt table creates one if it doesn't exsit
   // the id autoincerment for each attempt
