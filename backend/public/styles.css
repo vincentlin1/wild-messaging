@@ -186,3 +186,37 @@ body{
     justify-content: center;
     gap: 10px;
 }
+
+/* Container for input + button */
+.chat-input-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Style input like other form inputs, but slightly bigger */
+#textInput {
+  flex: 1; /* takes up remaining space */
+  padding: 14px; /* bigger than normal form inputs */
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+/* Style the send button */
+#sendBtn {
+  padding: 14px 20px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: #071025;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#sendBtn:hover {
+  background: rgba(214,184,90,0.8);
+}

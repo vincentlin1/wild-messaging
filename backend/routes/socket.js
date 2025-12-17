@@ -27,14 +27,16 @@ router.get('/history', (req, res) => {
   //get all the past meassages the newst ones first 
   const messages = db.prepare(`
     SELECT
-      display_name,
-      profile_color,
-      message,
-      created_at
-    FROM chat_messages
-    ORDER BY created_at DESC
+      c.display_name,
+      u.profile_color,
+      c.message,
+      c.created_at
+    FROM chat_messages c
+    JOIN users u ON c.user_id = u.id
+    ORDER BY c.created_at DESC
     LIMIT 20
   `).all();
+
     //send the meassage in reverse so new ones go at the bottom
   res.json(messages.reverse());
 });
