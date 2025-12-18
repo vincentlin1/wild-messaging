@@ -109,6 +109,7 @@ router.post('/login', async (req, res) => {
     const {  username, password } = req.body;
     const ip = req.ip; //get the ip
     const now = Date.now();
+    console.log(req.ip);
    
     // Validate input
     if (!username || !password) {
@@ -183,52 +184,13 @@ router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error('Logout error:', err);
-      return res.redirect('views/comments');
+      return res.redirect('/');
     }
     res.redirect('/');
   });
 });
 
 
-/**
- * POST /logout - Logout user (POST version)
- */
-router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-        console.error('Logout error:', err);
-        return res.redirect('/public/error.html?message=' + encodeURIComponent('An error occurred while logging out.') + '&back=/');
-    }
-    res.redirect('/public/logged-out.html');
-  });
-});
-
-
-/**
- * GET /me - Get current user info (requires authentication)
- */
-router.get('/me', (req, res) => {
-  if (!req.session || !req.session.userId) {
-    return res.redirect('/public/error.html?message=' + encodeURIComponent('You must be logged in to view this page.') + '&back=/api/auth/login');
-  }
- 
-  const user = db.prepare('SELECT id, username, created_at, last_login FROM users WHERE id = ?')
-    .get(req.session.userId);
- 
-  if (!user) {
-    return res.redirect('/public/error.html?message=' + encodeURIComponent('User not found in database.') + '&back=/');
-  }
- 
-  // Pass user data as query parameters to the profile page
-  const params = new URLSearchParams({
-    id: user.id,
-    username: user.username,
-    created_at: user.created_at || 'N/A',
-    last_login: user.last_login || 'Never'
-  });
- 
-  res.redirect(`/public/profile.html?${params.toString()}`);
-});
 
 
 module.exports = router;

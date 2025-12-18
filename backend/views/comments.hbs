@@ -28,17 +28,30 @@
   {{else}}
     <p>No comments yet. Be the first to post.</p>
   {{/if}}
-  <!--if logged in then allow to comment-->
-  {{#if isLoggedIn}}
-    <form class="from" method="POST" action="/comments/comment">
-      <textarea name="text" required></textarea>
-      <br>
-      <button class="btn" type="submit">Add new comment</button>
-    </form>
-  <!--else redirceted to log in-->
-  {{else}}
-    <p>You must <a href="/api/auth/login">log in</a> to post a comment.</p>
-  {{/if}}
+  <!--pagintion-->
+  {{#if totalPages}}
+    <div class="pagination">
+
+    {{#if hasPrev}}
+      <a href="/comments?page={{subtract page 1}}">Prev</a>
+    {{/if}}
+
+    {{#each pages}}
+      {{#if current}}
+        <span class="page current">{{number}}</span>
+      {{else}}
+        <a class="page" href="/comments?page={{number}}">
+          {{number}}
+        </a>
+      {{/if}}
+    {{/each}}
+
+    {{#if hasNext}}
+      <a href="/comments?page={{add page 1}}">Next</a>
+    {{/if}}
+
+  </div>
+{{/if}}
 </main>
 
 {{> footer}}

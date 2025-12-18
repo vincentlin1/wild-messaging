@@ -1,4 +1,11 @@
 // sqlite-session-store.js
+//mostly gotten from text book
+// express checks the cookie for a session ID
+// sqlitestore.get() loads the session data from database
+// middleware modifies the session (req.session)
+// on response, sqlitestore.set() saves the updated session back to SQLite
+// every 15 minutes, cleanup() removes expired sessions
+
 const { Store } = require('express-session');
 const Database = require('better-sqlite3');
 const path = require('path');

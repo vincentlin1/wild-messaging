@@ -220,3 +220,55 @@ body{
 #sendBtn:hover {
   background: rgba(214,184,90,0.8);
 }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.1s ease;
+}
+
+/* Hover */
+.pagination a:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--accent);
+  box-shadow: 0 0 8px rgba(214,184,90,0.45);
+}
+
+/* Active click */
+.pagination a:active {
+  transform: scale(0.95);
+}
+
+/* Current page */
+.pagination .current {
+  background: var(--accent);
+  color: #071025;
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(214,184,90,0.6);
+  cursor: default;
+}
+
+/* Disabled prev/next (optional if you add it later) */
+.pagination .disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}

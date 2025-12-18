@@ -7,7 +7,9 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - PORT=3035
+      - PORT=3034
+    ports:
+    - "3034:3034"
     networks:
       - app-network
 

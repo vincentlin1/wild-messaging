@@ -37,7 +37,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', true);
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
+//hbs helper for comment pagaintion
+hbs.registerHelper('add', (a, b) => a + b);
+hbs.registerHelper('subtract', (a, b) => a - b);
 
 
 
@@ -79,6 +83,7 @@ app.use((req, res, next) => {
 
 // Home for now 
 app.get('/', (req, res) => {
+  console.log(req.ip);
   res.render('home');
 });
 //  Auth routes
@@ -96,7 +101,7 @@ const server = http.createServer(app)
 ;
 const io = new Server(server, {
   cors: {
-    origin: "http://inventure:3034", // change to https://your-domain.com later
+    origin: "http://www.linventure.com", 
     methods: ["GET", "POST"],
     //credentials: true
   }
