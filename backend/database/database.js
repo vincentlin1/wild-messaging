@@ -1,12 +1,11 @@
 //database.js
 //creating the data base for the project 
-//
+
 const Database = require('better-sqlite3');
 const path = require('path');
 
 // Connect to database file
 const dbPath = path.join(__dirname, 'myapp.db');
-console.log(" SQLite DB path:", dbPath);
 const db = new Database(dbPath);
 
 try{
@@ -17,7 +16,7 @@ try{
   // email of the user should be unqiue
   // failed login attempt
   // lock out time
-  // pofile color as one of the customizable things can't be null
+  // pofile color as one of the customizable
   // creation time of user
   db.exec(
     `CREATE TABLE IF NOT EXISTS users (
@@ -28,32 +27,15 @@ try{
         display_name TEXT NOT NULL,
         failed_logins INTEGER DEFAULT 0,
         lock_until INTEGER DEFAULT 0,
-        profile_color TEXT DEFAULT '#000000',
+        profile_color TEXT DEFAULT '#ffffff',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );`
-   );
+  );
 
-  // the sessions table creates one if it doesn't exsit
-  // the id auto increment for each the session(prime key)
-  // the user_id uses the id in the users table as the int
-  // session token 
-  // created and expired at date
-  // forgin key is user id and it references the id in users table
-  // db.exec(
-  //   `CREATE TABLE IF NOT EXISTS sessions (
-  //       id INTEGER PRIMARY KEY AUTOINCREMENT,
-  //       user_id INTEGER NOT NULL,
-  //       session_token TEXT UNIQUE NOT NULL,
-  //       created_at INTEGER NOT NULL,
-  //       expires_at INTEGER NOT NULL,
-  //       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-  //   );`
-  //   );
 
   // comments table creates one if it doesn't exsit
   // comment id autoimerments for each comment(prime key)
   // user id is for which user made the comment 
-  // display name is the what username to display
   // content is the text 
   // created at is the time the comment was made
   // same as before the user id is a foreign key that references id in the users table
@@ -61,25 +43,22 @@ try{
     `CREATE TABLE IF NOT EXISTS comments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
-        display_name TEXT NOT NULL,
         content TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_at INTEGER NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );`
-    );
-  // chat messages table
-  // id is message id
+  );
+
+  // chat_messages table
+  // id is message id (primary key)
   // user_id which user sent it
-  // display_name name shown in chat
-  // profile_color user customization
-  // message chat content
+  // message is the chat content
   // created_at when message was sent
+  // display_name and profile_color are retrieved via JOIN with users table
   db.exec(
     `CREATE TABLE IF NOT EXISTS chat_messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
-        display_name TEXT NOT NULL,
-        profile_color TEXT NOT NULL,
         message TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -100,10 +79,10 @@ try{
         success INTEGER DEFAULT 0,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     );`
-    );
+  );
     console.log("success")
   }catch(err){
-    console.log(err.meassage)
+    console.log("fail", err.meassage)
   };
 
 module.exports = db;

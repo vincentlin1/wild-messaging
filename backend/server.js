@@ -1,7 +1,7 @@
 
 //server.js
 //routes get you to the page
-
+//all the dependencies,middlwear and registerHelper 
 //socket.io
 // (In discord i saw that we can send emit stuff in server instead of doing api/chat/send so i did)
 // creates an authenticated real-time chat system
@@ -10,6 +10,8 @@
 // broadcast to all connected users.
 
 //dependencies
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const hbs = require('hbs');
@@ -42,6 +44,7 @@ hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 //hbs helper for comment pagaintion
 hbs.registerHelper('add', (a, b) => a + b);
 hbs.registerHelper('subtract', (a, b) => a - b);
+hbs.registerHelper('eq', (a, b) => a === b); 
 
 
 
@@ -54,11 +57,11 @@ const sessionStore = new SQLiteStore({
 //sessionMiddleware for the app and socket io use
 const sessionMiddleware = session({
   store: sessionStore,
-  secret: 'your-secret-key',
+  secret: process.env.SESSION_SECRET||'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: {
-  secure: false, // Set to true if using HTTPS
+  secure: true, 
     maxAge: 24 * 60 * 60 * 1000  // 1 day
   }
 });
@@ -81,9 +84,8 @@ app.use((req, res, next) => {
 });
 
 
-// Home for now 
+// Home
 app.get('/', (req, res) => {
-  console.log(req.ip);
   res.render('home');
 });
 //  Auth routes
@@ -91,19 +93,20 @@ app.use('/api/auth', authRoutes);
 app.use('/comments', commentRoutes);
 app.use('/', accountRoutes);
 app.use('/api/chat', chatRoutes);
+//404 error
+app.use((req, res, next) => {
+  res.status(404).render('404');
+});
 
-//  Routes for normal
-app.use('/', authRoutes);
-app.use('/', commentRoutes);
+
 
 //socket.io
 const server = http.createServer(app)
 ;
 const io = new Server(server, {
   cors: {
-    origin: "http://www.linventure.com", 
+    origin: process.env.CORS_ORIGIN||"https://www.linventure.com",
     methods: ["GET", "POST"],
-    //credentials: true
   }
 });
 
@@ -118,7 +121,7 @@ io.on('connection', (socket) => {
     return;
   }
     //check successful socket connection
-    console.log(`Socket connected: user=${session.username}, id=${socket.id}`);
+    console.log(`Socket works user=${session.username} id=${socket.id}`);
     //listens the meassages that users writes 
     socket.on('chat:message', (data) => {
     // fetch profile_color from users table
@@ -158,7 +161,7 @@ io.on('connection', (socket) => {
 
   //disconnet 
   socket.on('disconnect', () => {
-    console.log(`Socket disconnected: ${socket.id}`);
+    console.log(`socket disconnected: ${socket.id}`);
   });
 });
 

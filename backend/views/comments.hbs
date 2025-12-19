@@ -20,7 +20,15 @@
           <div class="comment-meta">
             <strong class = "{{profile_color}}">{{display_name}}</strong> — {{created_at}}
           </div>
-          <div class="comment-body">{{content}}</div>
+          <!--if the comment are to long then show read more and preview else just show full-->
+          <div class="comment-body">
+          {{#if isLong}}
+            <p class="comment-text" data-preview="{{preview}}" data-full="{{full}}">{{preview}}</p>
+            <button class="toggle-btn" onclick="toggleComment(this)">Read more</button>
+          {{else}}
+            <p>{{preview}}</p>
+          {{/if}}
+          </div>
         </li>
       {{/each}}
     </ul>
@@ -28,14 +36,15 @@
   {{else}}
     <p>No comments yet. Be the first to post.</p>
   {{/if}}
-  <!--pagintion-->
+
+  <!--pagination-->
   {{#if totalPages}}
     <div class="pagination">
 
     {{#if hasPrev}}
       <a href="/comments?page={{subtract page 1}}">Prev</a>
     {{/if}}
-
+  <!--for each 10 comment make the into a page and show it into a list and show current and other pages-->
     {{#each pages}}
       {{#if current}}
         <span class="page current">{{number}}</span>
@@ -53,6 +62,29 @@
   </div>
 {{/if}}
 </main>
+
+
+<script>
+  
+    function toggleComment(btn) {
+      //take the prevouis element before the btn aka <p> class= "comment-text" ... </p>
+      const commentText = btn.previousElementSibling;
+      //preview = data-preview="{{preview}}" 
+      const preview = commentText.dataset.preview;
+      //full = data-full="{{full}}"
+      const full = commentText.dataset.full;
+
+      //if button click is read more then replace it with full and show less button
+      if (btn.textContent === 'Read more') {
+        commentText.textContent = full;
+        btn.textContent = 'Show less';
+      // else it is just the read more button and preview
+      } else {
+        commentText.textContent = preview;
+        btn.textContent = 'Read more';
+      }
+    }
+</script>
 
 {{> footer}}
 

@@ -68,12 +68,9 @@ router.post('/register', async (req, res) => {
     const passwordHash = await hashPassword(password);
    
     // Insert new user into database
-    const stmt = db.prepare(`
+    db.prepare(`
     INSERT INTO users (username, password_hash, email, display_name)
-    VALUES (?, ?, ?, ?)`);
-
-
-    stmt.run(
+    VALUES (?, ?, ?, ?)`).run(
       username,
       passwordHash,
       email,
@@ -129,7 +126,7 @@ router.post('/login', async (req, res) => {
     }
     // check if account is locked
     if (user.lock_until && now < user.lock_until) {
-      const minutes = Math.ceil((user.lock_until - now) / 60000);
+      const minutes = Math.ceil((user.lock_until - now) / 15 * 60 * 1000);//15 min
       return res.redirect('/api/auth/login?error=' + encodeURIComponent(`Account locked. Try again in ${minutes} minute(s).`));
     }
 

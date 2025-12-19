@@ -4,7 +4,7 @@
     <a href="/comments">Feed</a>
 
     {{#if user}}
-      <a href="/new_comment">New Comment</a>
+      <a href="/comments/new_comment">New Comment</a>
       <a href="/api/chat">Live chat</a>
      
     {{/if}}
@@ -14,10 +14,10 @@
     {{#if user}}
       <span>Welcome, <span class="{{user.profile_color}}">{{user.display_name}}</span></span>
       <a href="/profile">Profile</a>
-      <a href="/logout">Logout</a>
+      <a href="/api/auth/logout">Logout</a>
     {{else}}
-      <a href="/login">Login</a>
-      <a href="/register">Register</a>
+      <a href="/api/auth/login">Login</a>
+      <a href="/api/auth/register">Register</a>
     {{/if}}
   </div>
 </nav>

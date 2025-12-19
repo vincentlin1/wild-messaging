@@ -27,7 +27,7 @@ router.get('/history', (req, res) => {
   //get all the past meassages the newst ones first 
   const messages = db.prepare(`
     SELECT
-      c.display_name,
+      u.display_name,
       u.profile_color,
       c.message,
       c.created_at

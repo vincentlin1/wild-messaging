@@ -34,35 +34,40 @@
     const textInput = document.getElementById('textInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    // Connect to Socket.IO
+    // connect to Socket.IO
     const socket = io();
 
-    // Load chat history
+    // load chat history
     fetch('/api/chat/history')
       .then(res => res.json())
       .then(messages => {
+        // display each message in the chat window
         messages.forEach(m => appendMessage(m));
+       // scrolls to bottom to show newest messages like twitch
         chatEl.scrollTop = chatEl.scrollHeight;
       });
 
-    // Listen for new messages
+    // listen for new messages and add to the chat 
     socket.on('chat:message', (data) => {
       appendMessage(data);
       chatEl.scrollTop = chatEl.scrollHeight;
     });
-
+    // Send message when enter key is pressed or clicked
     sendBtn.addEventListener('click', sendMessage);
     textInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') sendMessage();
     });
 
+    //sends a chat message to the server with socket.emit 
     function sendMessage() {
       const msg = textInput.value.trim();
+      // make sure send empty messages
       if (!msg) return;
       socket.emit('chat:message', { message: msg });
+      // empty input field after sending
       textInput.value = '';
     }
-
+    //make the message with the data to the chat display
     function appendMessage({ display_name, profile_color, message, created_at  }) {
       const div = document.createElement('div');
       div.className = 'message';

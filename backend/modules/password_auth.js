@@ -6,6 +6,8 @@
 // Special character: At least one special character (!@#$%^&*(),.?":{}|<>)
 // Most of this is taken from textbook
 
+// Compares a plain text password with a hashed password
+
 
 const argon2 = require('argon2');
 

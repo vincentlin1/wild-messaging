@@ -5,11 +5,16 @@ services:
     build: ./backend
     container_name: backend-nodejs
     restart: unless-stopped
+    env_file:
+      - ./backend/.env
     environment:
       - NODE_ENV=production
       - PORT=3034
     ports:
     - "3034:3034"
+    volumes:
+      # mounting the database directory to persist data
+      - ./backend/database:/app/database
     networks:
       - app-network
 

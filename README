@@ -1,18 +1,22 @@
 # Wild West Forum (midterm Project)
 
-This is a simple Node.js + Express + Handlebars app using Docker and Nginx. 
+This is a semi complex Node.js + Express + Handlebars app using Docker and Nginx. 
 
 
 features:
-user registration and login
-post and view comments
+user registration and login with some security 
+post max 500 charater and view comments with pagation 
 cookies and sessions handled via Express
 styled with CSS 
+live chatting with socket io
 
 # prerequisites
 
 - Docker(https://www.docker.com/get-started) installed
 - Docker Compose(https://docs.docker.com/compose/install/) installed
+- sqlite3 is downloaded use "sudo apt download sqlite3" or use https://sqlite.org/download.html
+- 
+- If you want edit download nodejs the look in the package.js and npm download dependencies (npm install express express-sessions ...)
 
 # setup & Run
 
@@ -27,3 +31,207 @@ docker compose up -d
 docker compose down when done
 5. to remove all dockers 
 docker container prune to remove all dockers 
+
+# Database Schema Documentation
+This application uses SQLite as its database engine with the better-sqlite3 Node.js library. The database file is located at backend/database/myapp.db and persists data through Docker volume mounts.
+Tables
+1. users
+Stores user account information including authentication credentials, account lockout status, and profile customization.
+Key Columns:
+
+id (Primary Key)
+username, password_hash, email
+display_name, profile_color
+failed_logins, lock_until (for account lockout)
+created_at
+
+Relationships:
+
+Referenced by comments.user_id (FK)
+Referenced by chat_messages.user_id (FK)
+
+
+2. sessions
+Manages user session data for express-session authentication.
+Key Columns:
+
+sid (Primary Key) - Session ID
+sess - Serialized session data
+expire - Expiration timestamp
+
+automatically managed by express-session for user login state.
+
+3. comments
+stores user-submitted comments for the comments feed (max 500 characters).
+Key Columns:
+
+id (Primary Key)
+user_id (FK → users.id)
+content
+created_at
+
+Relationships:
+
+Foreign key to users table with CASCADE delete
+Joined with users to retrieve display_name and profile_color
+
+
+4. chat_messages
+Stores real-time chat messages.
+Key Columns:
+
+id (Primary Key)
+user_id (FK → users.id)
+message
+created_at
+
+Relationships:
+
+Foreign key to users table with CASCADE delete
+Joined with users to retrieve display_name and profile_color
+
+
+5. login_attempts
+log tracking all login attempts (successful and failed) with Ip addresses.
+Key Columns:
+
+id (Primary Key)
+username
+ip_address
+success (0 = failed, 1 = successful)
+timestamp
+
+for logging authentication attempts and detecting suspicious activity.
+
+Indexes
+
+idx_sessions_expire - Fast cleanup of expired sessions
+idx_login_attempts_username - Quick user activity lookups
+idx_login_attempts_timestamp - Efficient time-based queries
+
+Entity Relationships
+users 1 to many comments
+users 1 to many chat_messages
+users 1 to many session
+login_attempts references usernames 
+deleting a user automatically deletes their comments and chat messages.
+
+Data Persistence
+Database persists through Docker volume mount: ./backend/database:/app/database
+so data will survives container rebuilds and docker compose down commands.
+
+# Environment Variables and Configuration Requirements:
+
+Create .env File
+Create a .env file in the backend/ directory:
+bash# Application Configuration
+NODE_ENV=production
+PORT=3034 or whatever you want
+
+# Session Configuration
+SESSION_SECRET=your randomly generated secret here
+
+# Socket.IO Configuration
+CORS_ORIGIN=https://www.example.com your own website 
+
+make sure to not commit .env into github
+
+# Environment Variables: 
+Application Configuration
+    NODE_ENV: Node.js environment mode
+    Required: Yes
+
+    PORT: Port the application listens on
+    Default: 3034 it is required 
+    remember it must match Docker port mapping
+
+# Configuration:
+The following are Configuration currently hardcoded in the code:
+
+    account Lockout Attempts: 5 failed login attempts
+    account Lockout Duration: 15 minutes
+
+Application Limits
+
+max comment length: 500 characters (routes/comments.js)
+comments per page: 10 (routes/comments.js)
+chat history limit: 20 messages (routes/socket.js)
+
+Cookie Settings
+
+cookie secure: true ( HTTPS is enabled)
+cookie HttpOnly: true (prevents JavaScript access)
+
+Database Configuration
+
+database path: ./database/myapp.db 
+
+# Nginx Proxy Manager setup instructions
+If you want to make your own websit from this make sure to remove nginx folder then create a new one and follow these steps: https://tschotter.github.io/webserver-tomb/11-putting-server-on-map/proxy-manager-and-ssl.html 
+
+In your nginx/.../proxy-host/ .conf file make sure to put    
+  location / {
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Real-IP $remote_addr;  
+  }
+  to get the clients ip not the proxys
+
+# Security Features Implemented:
+The code implements multiple layers of security to protect user accounts, sessions, and data. s measures include password hashing, account lockout mechanisms, session management, SQL injection prevention, and logging.
+1. password security: 
+password Hashing with Argon2 in modules/password-auth.js
+the code uses Argon2id for password hashing, each password has random salt,no plaintext storage
+
+In modules/password-auth.js
+hashPassword(password) - Creates secure hash with salt
+comparePassword(password, hash) -  verifies password 
+validatePassword(password) - make sure password meets complexity requirements
+
+2. Password Complexity Requirements
+Minimum 8 characters 
+At least one uppercase letter (A-Z)
+At least one lowercase letter (a-z) 
+At least one number (0-9) 
+At least one special character (!@#$%^&*(),.?":{}|<>)
+
+3. Account Lockout Protection
+tracks failed login attempts in users.failed_logins column
+locks account after 5 consecutive failures by username and IP in in login_attempts table 
+15 minute lockout duration 
+automatic reset on successful login
+
+4. Session Management
+Session data never sent to client
+Sessions expire after 24 hours
+New session ID created on login 
+
+# Socket.IO real-time chat
+In routes/socket.js
+/api/chat/history
+returns last 20 messages sorted by oldest first so newest can be on the bottom(like a twitch chat)
+joins with users table to get current display_name and profile_color
+messages reflect user's current profile settings
+
+The actual Live chatting part is in server.js(saw discord and it was ok)
+client connects with session cookie
+server vaildates session with userId
+if valid: connection succuess
+If invalid: emits error and disconnect
+
+Event: chat:message (Client TO Server)
+Send a chat message to all connected users.
+gets user's current display_name and profile_color from database
+creates message object with timestamp
+inserts message into chat_messages table
+broadcasts to all connected clients
+
+Event: chat:message (Server TO Client)
+Receives chat messages from other users.
+Client get data and sent to all connected clients
+
+automatic when disconnects connection closes
+
+# Known limitations or issues
+
+In the resigter it only shows one of the problems if you have many 
+If you forgot psaaword you can't change it

@@ -1,3 +1,6 @@
+//email_auth
+//just checks it's in a email format nothing to speical 
+
 function validateEmail(email) {
   const errors = [];
     // if the email it starts with characters other than spaces or "@" ([^\s@]+), followed by an "@" symbol, a domain name, and a valid top-level domain.

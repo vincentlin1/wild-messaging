@@ -15,44 +15,78 @@
 {{#if error}}<p class="error">{{error}}</p>{{/if}}
 {{#if success}}<p class="success">{{success}}</p>{{/if}}
 
-<h2>Change Password</h2>
-<form method="POST" action="/profile/password">
-  <input type="password" name="current_password" placeholder="Current password" required>
-  <input type="password" name="new_password" placeholder="New password" required>
-  <button type="submit">Change Password</button>
-</form>
+    <div class="settings-section">
+      <h2>Change Password</h2>
+      <form class="form" method="POST" action="/profile/password">
+        <label>
+          Current Password
+          <input type="password" name="current_password" placeholder="Enter current password" required>
+        </label>
+        <label>
+          New Password
+          <input type="password" name="new_password" placeholder="Enter new password" required>
+        </label>
+        <button class="btn" type="submit">Change Password</button>
+      </form>
+    </div>
 
-<hr>
+    <hr>
 
-<h2>Change Email</h2>
-<form method="POST" action="/profile/email">
-  <input type="email" name="email" value="{{user.email}}" required>
-  <input type="password" name="password" placeholder="Confirm password" required>
-  <button type="submit">Update Email</button>
-</form>
+    <div class="settings-section">
+      <h2>Change Email</h2>
+      <p class="current-value white">Current: <strong>{{user.email}}</strong></p>
+      <form class="form" method="POST" action="/profile/email">
+        <label>
+          New Email
+          <input type="email" name="email" placeholder="Enter new email" required>
+        </label>
+        <label>
+          Confirm Password
+          <input type="password" name="password" placeholder="Enter password to confirm" required>
+        </label>
+        <button class="btn" type="submit">Update Email</button>
+      </form>
+    </div>
 
-<hr>
+    <hr>
 
-<h2>Change Display Name</h2>
-<form method="POST" action="/profile/display-name">
-  <input type="text" name="display_name" value="{{user.display_name}}" required>
-  <input type="password" name="password" placeholder="Confirm password" required>
-  <button type="submit">Update Display Name</button>
-</form>
-<hr>
+    <div class="settings-section">
+      <h2>Change Display Name</h2>
+      <p class="current-value">Current: <strong class="{{user.profile_color}}">{{user.display_name}}</strong></p>
+      <form class="form" method="POST" action="/profile/display-name">
+        <label>
+          New Display Name
+          <input type="text" name="display_name" placeholder="Enter new display name" required>
+        </label>
+        <label>
+          Confirm Password
+          <input type="password" name="password" placeholder="Enter password to confirm" required>
+        </label>
+        <button class="btn" type="submit">Update Display Name</button>
+      </form>
+    </div>
 
-<h2>Change Profile Color</h2>
-<form method="POST" action="/profile/color">
-  <label>Profile name color:</label>
-  <select name="color">
-    <option value="blue">Blue</option>
-    <option value="red">Red</option>
-    <option value="green">Green</option>
-    <option value="purple">Purple</option>
-    <option value="orange">Orange</option>
-  </select>
-  <button>Save</button>
-</form>
+    <hr>
+
+    <div class="settings-section">
+      <h2>Change Profile Color</h2>
+      <p class="current-value">Current: <strong class="{{user.profile_color}}">{{user.display_name}}</strong></p>
+      <form class="form" method="POST" action="/profile/color">
+        <label>
+          Profile Name Color
+          <select name="color" required>
+            <option value="blue" {{#if (eq user.profile_color 'blue')}}selected{{/if}}>Blue</option>
+            <option value="red" {{#if (eq user.profile_color 'red')}}selected{{/if}}>Red</option>
+            <option value="green" {{#if (eq user.profile_color 'green')}}selected{{/if}}>Green</option>
+            <option value="purple" {{#if (eq user.profile_color 'purple')}}selected{{/if}}>Purple</option>
+            <option value="orange" {{#if (eq user.profile_color 'orange')}}selected{{/if}}>Orange</option>
+            <option value="white" {{#if (eq user.profile_color 'white')}}selected{{/if}}>White</option>
+          
+          </select>
+        </label>
+        <button class="btn" type="submit">Save Color</button>
+      </form>
+    </div>
 
 
   {{> footer}}

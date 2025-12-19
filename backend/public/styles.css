@@ -30,6 +30,7 @@ main.container {
 .green  { color: #16a34a; }
 .purple { color: #7c3aed; }
 .orange { color: #ea580c; }
+.white  { color: #ffffff; }
 
 *{box-sizing:border-box}
 
@@ -271,4 +272,74 @@ body{
 .pagination .disabled {
   opacity: 0.4;
   pointer-events: none;
+}
+/*comment toggle button*/
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #0066cc;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font: inherit;
+}
+
+.toggle-btn:hover {
+  color: #004499;
+}
+/*profile colors*/
+.settings-section {
+  margin-bottom: 2rem;
+}
+
+.current-value {
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 2rem 0;
+}
+
+/*404*/
+/* Error Pages */
+.error-page {
+  text-align: center;
+  padding: 4rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.error-page h1 {
+  font-size: 6rem;
+  margin: 0;
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.error-page h2 {
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #333;
+}
+
+.error-page p {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 1.5rem 0;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.error-actions .btn {
+  text-decoration: none;
 }
