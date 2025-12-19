@@ -1,0 +1,23 @@
+<nav class="nav">
+  <div class="nav-left">
+    <a href="/">Wild West Forum</a>
+    <a href="/comments">Feed</a>
+
+    {{#if user}}
+      <a href="/comments/new_comment">New Comment</a>
+      <a href="/api/chat">Live chat</a>
+     
+    {{/if}}
+  </div>
+
+  <div class="nav-right">
+    {{#if user}}
+      <span>Welcome, <span class="{{user.profile_color}}">{{user.display_name}}</span></span>
+      <a href="/profile">Profile</a>
+      <a href="/api/auth/logout">Logout</a>
+    {{else}}
+      <a href="/api/auth/login">Login</a>
+      <a href="/api/auth/register">Register</a>
+    {{/if}}
+  </div>
+</nav>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Chat</title>
+    <link rel="stylesheet" href="/styles.css">
+  <style>
+    body { font-family: sans-serif; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: scroll; }
+    #textInput{flex: 1; padding: 8px;}
+    .message { margin-bottom: 8px; }
+    .username { font-weight: bold; }
+    .timestamp { font-size: 0.8em; color: #888; }
+  </style>
+</head>
+<body>
+  
+  {{> nav}}
+
+  <h1>Live Chat</h1>
+  <div id="chat"></div>
+  <div class="chat-input-container">
+  <input type="text" id="textInput" placeholder="Type a message" autocomplete="off">
+  <button id="sendBtn">Send</button>
+  </div>
+
+
+  {{> footer}}
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const chatEl = document.getElementById('chat');
+    const textInput = document.getElementById('textInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // connect to Socket.IO
+    const socket = io();
+
+    // load chat history
+    fetch('/api/chat/history')
+      .then(res => res.json())
+      .then(messages => {
+        // display each message in the chat window
+        messages.forEach(m => appendMessage(m));
+       // scrolls to bottom to show newest messages like twitch
+        chatEl.scrollTop = chatEl.scrollHeight;
+      });
+
+    // listen for new messages and add to the chat 
+    socket.on('chat:message', (data) => {
+      appendMessage(data);
+      chatEl.scrollTop = chatEl.scrollHeight;
+    });
+    // Send message when enter key is pressed or clicked
+    sendBtn.addEventListener('click', sendMessage);
+    textInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    //sends a chat message to the server with socket.emit 
+    function sendMessage() {
+      const msg = textInput.value.trim();
+      // make sure send not empty messages
+      if (!msg) return;
+      socket.emit('chat:message', { message: msg });
+      // empty input field after sending
+      textInput.value = '';
+    }
+    //make the message with the data to the chat display
+    function appendMessage({ display_name, profile_color, message, created_at  }) {
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.innerHTML = `<span class="username" style="color:${profile_color}">${display_name}</span>: ${message} <span class="timestamp">[${created_at}]</span>`;
+      chatEl.appendChild(div);
+    }
+
+  </script>
+</body>
+</html>

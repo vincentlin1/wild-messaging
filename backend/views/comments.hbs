@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wild meassage - feed</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   {{> nav}}
+
+<main class="container">
+  <h1>Comments</h1>
+  <!--if there is a comment then set up the comment boxes -->
+  {{#if comments.length}}
+    <ul class="comments-list">
+      <!--for each comment print out the selected information-->
+      {{#each comments}}
+        <li class="comment">
+          <div class="comment-meta">
+            <strong class = "{{profile_color}}">{{display_name}}</strong> — {{created_at}}
+          </div>
+          <!--if the comment are to long then show read more and preview else just show full-->
+          <div class="comment-body">
+          {{#if isLong}}
+            <p class="comment-text" data-preview="{{preview}}" data-full="{{full}}">{{preview}}</p>
+            <button class="toggle-btn" onclick="toggleComment(this)">Read more</button>
+          {{else}}
+            <p>{{preview}}</p>
+          {{/if}}
+          </div>
+        </li>
+      {{/each}}
+    </ul>
+    <!--no comment -->
+  {{else}}
+    <p>No comments yet. Be the first to post.</p>
+  {{/if}}
+
+  <!--pagination-->
+  {{#if totalPages}}
+    <div class="pagination">
+
+    {{#if hasPrev}}
+      <a href="/comments?page={{subtract page 1}}">Prev</a>
+    {{/if}}
+  <!--for each 10 comment make the into a page and show it into a list and show current and other pages-->
+    {{#each pages}}
+      {{#if current}}
+        <span class="page current">{{number}}</span>
+      {{else}}
+        <a class="page" href="/comments?page={{number}}">
+          {{number}}
+        </a>
+      {{/if}}
+    {{/each}}
+
+    {{#if hasNext}}
+      <a href="/comments?page={{add page 1}}">Next</a>
+    {{/if}}
+
+  </div>
+{{/if}}
+</main>
+
+
+<script>
+  
+    function toggleComment(btn) {
+      //take the prevouis element before the btn aka <p> class= "comment-text" ... </p>
+      const commentText = btn.previousElementSibling;
+      //preview = data-preview="{{preview}}" 
+      const preview = commentText.dataset.preview;
+      //full = data-full="{{full}}"
+      const full = commentText.dataset.full;
+
+      //if button click is read more then replace it with full and show less button
+      if (btn.textContent === 'Read more') {
+        commentText.textContent = full;
+        btn.textContent = 'Show less';
+      // else it is just the read more button and preview
+      } else {
+        commentText.textContent = preview;
+        btn.textContent = 'Read more';
+      }
+    }
+</script>
+
+{{> footer}}
+
+</body>
+</html>
+

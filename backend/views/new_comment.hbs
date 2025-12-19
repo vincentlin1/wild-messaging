@@ -11,13 +11,13 @@
 
   <main class="container">
     <h1>New Comment</h1>
-    <!-- eror if not logged in -->
+    <!-- erorr if not logged in or max length passed -->
     {{#if error}}
     <p class="error">{{error}}</p>
     {{/if}}
 <!-- new form to post-->
-    <form class="form" method="POST" action="/comment">
-      <label>Comment
+    <form class="form" method="POST" action="/comments/new_comment">
+      <label>Comment - Max 500 charaters 
         <textarea name="text" required></textarea>
       </label>
 

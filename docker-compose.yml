@@ -1,26 +1,35 @@
-#Text Book just changed backend to nodejs
+# copied from textbook
 services:
   # Node.js Express application
-  nodejs:
-    build: ./nodejs
-    container_name: nodejs
+  backend-nodejs:
+    build: ./backend
+    container_name: backend-nodejs
     restart: unless-stopped
+    env_file:
+      - ./backend/.env
     environment:
       - NODE_ENV=production
       - PORT=3034
-    # No ports exposed - only nginx can access this container
+    ports:
+    - "3034:3034"
+    volumes:
+      # mounting the database directory to persist data
+      - ./backend/database:/app/database
     networks:
       - app-network
 
-  # nginx reverse proxy
-  nginx:
-    build: ./nginx
-    container_name: my-nginx-proxy
+  # Nginx Proxy Manager
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
-      - "80:80"  # Only nginx exposes ports to the host
-    depends_on:
-      - nodejs
+      - '80:80'      # HTTP traffic
+      - '443:443'    # HTTPS traffic
+      - '5001:81'    # Admin web interface, pick an unusual port for security
+    volumes: # place to store all the data that we need persistant and external
+      - ./nginx/data:/data
+      - ./nginx/letsencrypt:/etc/letsencrypt
     networks:
       - app-network
 

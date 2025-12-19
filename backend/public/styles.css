@@ -1,0 +1,346 @@
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The main content grows to fill the space and pushes footer down */
+main.container {
+  flex: 1;
+}
+
+:root{
+  /*bg=#3A4151 from og #0f1724 */
+  --bg:#3A4151;
+  --card:#0b1220;
+  --accent:#d6b85a;
+  --muted:#9aa4b2;
+  --text:#e6eef6;
+  --error:#ff6b6b;
+  --success:#90ee90;
+}
+/* predefined colors for profile color */
+.blue   { color: #2563eb; }
+.red    { color: #dc2626; }
+.green  { color: #16a34a; }
+.purple { color: #7c3aed; }
+.orange { color: #ea580c; }
+.white  { color: #ffffff; }
+
+*{box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:linear-gradient(180deg,#071025 0%, #0b1220 100%);
+  color:var(--text);
+}
+
+.container{
+  max-width:900px;
+  margin:28px auto;
+  padding:16px;
+}
+
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 24px;
+  background:rgba(255,255,255,0.03);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  
+}
+
+.nav a{
+  color:var(--text);
+  text-decoration:none;
+  margin-right:14px;
+ /* Smooth animation */
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+
+}
+
+.nav a:hover{
+  background:rgba(255,255,255,0.08);
+  color:var(--accent);
+  box-shadow:0 0 8px rgba(214,184,90,0.45);
+}
+
+/* Click effect */
+.nav a:active{
+  transform:scale(0.96);
+}
+
+.nav-right a:last-child{
+  margin-right:0;
+}
+.nav-right a {
+  background: var(--accent);
+  color: #071025 !important;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 2px solid var(--accent);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Hover effect for button */
+.nav-right a:hover {
+  background: transparent;
+  color: var(--accent) !important;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(214,184,90,0.5);
+}
+
+/*  Click effect */
+.nav-right a:active {
+  transform: scale(0.95);
+}
+
+
+.footer{
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+  opacity:0.8;
+  margin-top:30px;
+}
+
+.form{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-width:550px;
+}
+.error{
+  color: var(--error); 
+  font-weight: bold;
+  max-width: 550px;
+
+}
+.success{
+  color: var(--success); 
+  font-weight: bold;
+}
+
+.form label{
+  display:flex;
+  flex-direction:column;
+}
+
+.form input,
+.form textarea{
+  padding:10px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,0.05);
+  background:rgba(255,255,255,0.04);
+  color:var(--text);
+}
+
+.btn{
+  background:var(--accent);
+  color:#071025;
+  padding:10px 14px;
+  border:0;
+  border-radius:8px;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.comments-list{
+  list-style:none;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.comment{
+  background:rgba(255,255,255,0.03);
+  padding:12px;
+  border-radius:8px;
+}
+
+.comment-meta{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.comment-body{
+  white-space:pre-wrap;
+}
+
+.quick-links{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Container for input + button */
+.chat-input-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Style input like other form inputs, but slightly bigger */
+#textInput {
+  flex: 1; /* takes up remaining space */
+  padding: 14px; /* bigger than normal form inputs */
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+/* Style the send button */
+#sendBtn {
+  padding: 14px 20px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: #071025;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#sendBtn:hover {
+  background: rgba(214,184,90,0.8);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.1s ease;
+}
+
+/* Hover */
+.pagination a:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--accent);
+  box-shadow: 0 0 8px rgba(214,184,90,0.45);
+}
+
+/* Active click */
+.pagination a:active {
+  transform: scale(0.95);
+}
+
+/* Current page */
+.pagination .current {
+  background: var(--accent);
+  color: #071025;
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(214,184,90,0.6);
+  cursor: default;
+}
+
+/* Disabled prev/next (optional if you add it later) */
+.pagination .disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+/*comment toggle button*/
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #0066cc;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font: inherit;
+}
+
+.toggle-btn:hover {
+  color: #004499;
+}
+/*profile colors*/
+.settings-section {
+  margin-bottom: 2rem;
+}
+
+.current-value {
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 2rem 0;
+}
+
+/*404*/
+/* Error Pages */
+.error-page {
+  text-align: center;
+  padding: 4rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.error-page h1 {
+  font-size: 6rem;
+  margin: 0;
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.error-page h2 {
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #333;
+}
+
+.error-page p {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 1.5rem 0;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.error-actions .btn {
+  text-decoration: none;
+}
