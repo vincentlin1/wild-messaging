@@ -55,7 +55,7 @@ router.post('/register', async (req, res) => {
     const existingEmail = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
     if (existingEmail) {
         console.log('email already exist')
-      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Email already exists. Please choose a different Email or click forgot password.'));
+      return res.redirect('/api/auth/register?error=' + encodeURIComponent('Email already exists. Please choose a different Email.'));
     }
     //very simple vaild email comformation
     const vaildEmail = validateEmail(email);
@@ -125,36 +125,42 @@ router.post('/login', async (req, res) => {
      
     }
     // check if account is locked
-    if (user.lock_until && now < user.lock_until) {
-      const minutes = Math.ceil((user.lock_until - now) / 15 * 60 * 1000);//15 min
-      return res.redirect('/api/auth/login?error=' + encodeURIComponent(`Account locked. Try again in ${minutes} minute(s).`));
+  if (user.lock_until && now < user.lock_until) {
+    const minutes = Math.ceil((user.lock_until - now) / (60 * 1000));//timeout countdown
+    return res.redirect('/api/auth/login?error=' + encodeURIComponent(`Account locked. Try again in ${minutes} minute(s).`));
+  } else if (user.lock_until && now >= user.lock_until) {
+    // Lock expired, clear it
+    db.prepare(`
+      UPDATE users SET 
+      lock_until = 0, 
+      failed_logins = 0 
+      WHERE id = ?`).run(user.id);
+  }
+
+  // compares entered password with stored hash
+  const passwordMatch = await comparePassword(password, user.password_hash);
+
+  if (!passwordMatch) {
+    let failed = user.failed_logins + 1;
+    let lockUntil = null;
+    // if failed attempt is greater then 5 lockout 
+    if (failed > 5) {
+      lockUntil = now + 15 * 60 * 1000;
+    }
+     else {
+      lockUntil = 0; // else it stays at 0
     }
 
-    // Compare entered password with stored hash
-    const passwordMatch = await comparePassword(password, user.password_hash);
+  //update the database
+  db.prepare('UPDATE users SET failed_logins = ?, lock_until = ? WHERE id = ?')
+    .run(failed, lockUntil, user.id);
+  //interst the login attempts the ip and username so we can time them out 
+  db.prepare('INSERT INTO login_attempts (username, ip_address) VALUES (?, ?)').run(username, ip);
+
+  return res.redirect('/api/auth/login?error=' + encodeURIComponent('Invalid username or password'));
+}
    
-    if (!passwordMatch) {
-      console.log('username or pass not match')
-      let failed = user.failed_logins + 1;
-      let lockUntil = 0;
-
-      // lock the account if failed attempts exceed 5
-      if (failed >= 5) {
-        lockUntil = now + 15 * 60 * 1000; // 15 minutes
-        failed = 0; // reset failed attempts after locking
-      }
-
-      // update failed login count and lock_until
-      db.prepare('UPDATE users SET failed_logins = ?, lock_until = ? WHERE id = ?')
-        .run(failed, lockUntil, user.id);
-
-      //update failed attempt
-      db.prepare('INSERT INTO login_attempts (username, ip_address) VALUES (?, ?)').run(username, ip);
-
-      return res.redirect('/api/auth/login?error=' + encodeURIComponent('Invalid username or password'));
-    }
-   
-    // successful login → reset failed attempts and lock_until
+    // successful login reset failed attempts and lock_until
     db.prepare('UPDATE users SET failed_logins = 0, lock_until = 0 WHERE id = ?').run(user.id);
     // log successful login
     db.prepare('INSERT INTO login_attempts (username, ip_address, success) VALUES (?, ?, 1)').run(username, ip);

@@ -6,7 +6,7 @@ function validateEmail(email) {
     // if the email it starts with characters other than spaces or "@" ([^\s@]+), followed by an "@" symbol, a domain name, and a valid top-level domain.
     // found how to validate from https://www.geeksforgeeks.org/javascript/javascript-program-to-validate-an-email-address/
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    errors.push('Require Vaild Email address');
+    errors.push('Require Vaild Email address like Example@something.com');
   }
 
   return {

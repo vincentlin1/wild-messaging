@@ -127,6 +127,7 @@ body{
 .error{
   color: var(--error); 
   font-weight: bold;
+  max-width: 550px;
 
 }
 .success{

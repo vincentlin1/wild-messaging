@@ -4,6 +4,7 @@
 // Lowercase letter: At least one lowercase letter (a-z)
 // Number: At least one digit (0-9)
 // Special character: At least one special character (!@#$%^&*(),.?":{}|<>)
+// Compares password hash in database with the user given password hash
 // Most of this is taken from textbook
 
 // Compares a plain text password with a hashed password

@@ -1,11 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database/database');
-const {
-  validatePassword,
-  hashPassword,
-  comparePassword
-} = require('../modules/password_auth');
+const {validatePassword,hashPassword, comparePassword} = require('../modules/password_auth');
 const { validateEmail } = require('../modules/email_auth');
 
 // require login
@@ -34,23 +30,28 @@ router.get('/profile', requireAuth, (req, res) => {
 router.post('/profile/password', requireAuth, async (req, res) => {
   const { current_password, new_password } = req.body;
 
-  const user = db.prepare(`
+  const userAuth = db.prepare(`
     SELECT password_hash
     FROM users
     WHERE id = ?
   `).get(req.session.userId);
 
+  const user = db.prepare(`
+    SELECT username, email, display_name, profile_color
+    FROM users
+    WHERE id = ?
+  `).get(req.session.userId);
+
   // verify current password
-  const ok = await comparePassword(current_password, user.password_hash);
+  const ok = await comparePassword(current_password, userAuth.password_hash);
   if (!ok) {
-    return res.redirect('/profile?error=Incorrect current password');
+    return res.render('profile', { user, error:"Not the current password" });
   }
 
   // validate new password
   const validation = validatePassword(new_password);
   if (!validation.valid) {
-    return res.redirect('/profile?error=' +
-      encodeURIComponent(validation.errors.join(', ')));
+    return res.render('profile', { user, error: validation.error });
   }
 
   const newHash = await hashPassword(new_password);
@@ -70,39 +71,55 @@ router.post('/profile/password', requireAuth, async (req, res) => {
 
 // change email
 router.post('/profile/email', requireAuth, async (req, res) => {
-  const { password, newEmail } = req.body;
+  const { password, new_email } = req.body;
 
-  const user = db.prepare(`
+  const userAuth = db.prepare(`
     SELECT password_hash
     FROM users
     WHERE id = ?
   `).get(req.session.userId);
+
+  const user = db.prepare(`
+    SELECT username, email, display_name, profile_color
+    FROM users
+    WHERE id = ?
+  `).get(req.session.userId);
+
     //compare password to see if it's ok
-  const ok = await comparePassword(password, user.password_hash);
+  const ok = await comparePassword(password, userAuth.password_hash);
   if (!ok) {
-    return res.redirect('/profile?error=Incorrect password');
+    return res.render('profile', { user, error:"Not the current password" });
   }
+
   //vaildate the email
-  const valid = validateEmail(newEmail);
+  const valid = validateEmail(new_email);
   if (!valid.valid) {
-    return res.redirect('/profile?error=' +
-      encodeURIComponent(valid.errors.join(', ')));
+    return res.render('profile', { user, error: valid.errors });
   }
+
   //see if the new email exists if it does then change
   const exists = db.prepare(`
     SELECT id FROM users WHERE email = ?
-  `).get(newEmail);
+  `).get(new_email);
+
   if (exists) {
-    return res.redirect('/profile?error=Email already in use');
+    return res.render('profile', { user, error: "Email already in use" });
   }
+
   //change email
   db.prepare(`
     UPDATE users
     SET email = ?
     WHERE id = ?
-  `).run(newEmail, req.session.userId);
+  `).run(new_email, req.session.userId);
+   //get updated info 
+  const updatedUser = db.prepare(`
+    SELECT username, email, display_name, profile_color
+    FROM users
+    WHERE id = ?
+  `).get(req.session.userId);
 
-  res.redirect('/profile?success=Email updated');
+  return res.render('profile', { user: updatedUser, success: "Email has been changed" });
 });
 
 
@@ -111,16 +128,28 @@ router.post('/profile/display-name', requireAuth, async (req, res) => {
   const { password, display_name } = req.body;
 
   
-  const user = db.prepare(`
+  const userAuth = db.prepare(`
     SELECT password_hash
     FROM users
     WHERE id = ?
   `).get(req.session.userId);
+
+  const user = db.prepare(`
+    SELECT username, email, display_name, profile_color
+    FROM users
+    WHERE id = ?
+  `).get(req.session.userId);
+
     // compare password to see change the display
-  const ok = await comparePassword(password, user.password_hash);
+  const ok = await comparePassword(password, userAuth.password_hash);
   if (!ok) {
-    return res.redirect('/profile?error=Incorrect password');
+     return res.render('profile', { user, error:"Not the current password" });
   }
+  //if display name is same as usernamme error
+  if (display_name === user.username) {
+    return res.render('profile', { user, error: "Display name cannot be the same as username" });
+  }
+
   //change it to new display name
   db.prepare(`
     UPDATE users
@@ -128,18 +157,26 @@ router.post('/profile/display-name', requireAuth, async (req, res) => {
     WHERE id = ?
   `).run(display_name, req.session.userId);
 
-  res.redirect('/profile?success=Display name updated');
+  const updatedUser = db.prepare(`
+    SELECT username, email, display_name, profile_color
+    FROM users
+    WHERE id = ?
+  `).get(req.session.userId);
+
+  return res.render('profile', { user: updatedUser, success: "Display name has been changed" });
 });
 
 // change /color
 router.post('/profile/color', requireAuth, (req, res) => {
-  const allowedColors = ['blue', 'red', 'green', 'purple', 'orange'];
+  const allowedColors = ['blue', 'red', 'green', 'purple', 'orange', 'white'];
   const { color } = req.body;
 
+  // if not an allow color invaild color
   if (!allowedColors.includes(color)) {
-    return res.status(400).send('Invalid color');
+    return res.send('Invalid color');
   }
 
+  // update the colors 
   db.prepare(`
     UPDATE users SET profile_color = ? WHERE id = ?
   `).run(color, req.session.userId);

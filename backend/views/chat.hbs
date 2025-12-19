@@ -61,7 +61,7 @@
     //sends a chat message to the server with socket.emit 
     function sendMessage() {
       const msg = textInput.value.trim();
-      // make sure send empty messages
+      // make sure send not empty messages
       if (!msg) return;
       socket.emit('chat:message', { message: msg });
       // empty input field after sending

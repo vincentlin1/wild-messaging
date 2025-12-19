@@ -143,27 +143,31 @@ io.on('connection', (socket) => {
       message: data.message,
       created_at: new Date().toISOString()
     };
+    try{
     //store the content
     db.prepare(`
       INSERT INTO chat_messages
-        (user_id, display_name, profile_color, message, created_at)
-      VALUES (?, ?, ?, ?, ?)
+        (user_id, message, created_at)
+      VALUES (?, ?, ?)
     `).run(
       message.userId,
-      message.display_name,
-      message.profile_color,
       message.message,
       message.created_at
     );
     // broadcast to all clients
-    io.emit('chat:message', message);
-  });
 
+      // Broadcast to all clients
+    io.emit('chat:message', message);
+  } catch (error) {
+    console.error('Database error:', error);
+    socket.emit('error', { message: 'Failed to send message' });
+  }
+});
   //disconnet 
   socket.on('disconnect', () => {
     console.log(`socket disconnected: ${socket.id}`);
   });
-});
+}); 
 
 
 server.listen(PORT, '0.0.0.0', () => {
